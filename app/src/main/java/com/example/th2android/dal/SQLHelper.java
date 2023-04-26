@@ -37,6 +37,14 @@ public class SQLHelper extends SQLiteOpenHelper {
 
     }
 
+//    public void addItem(Item i){
+//        String sql = "INSERT INTO items(name, author, date, phamvi, doituong, rating)" +
+//                "VALUES(?,?,?,?,?,?)";
+//        String[] args = {i.getName(), i.getAuthor(), i.getDate(), i.getPhamvi(), i.getDoituong(), i.getRating()};
+//        SQLiteDatabase st = getWritableDatabase();
+//        st.execSQL(sql, args);
+//    }
+
     public long addItem(Item i){
         ContentValues values = new ContentValues();
         values.put("name", i.getName());
@@ -165,4 +173,25 @@ public class SQLHelper extends SQLiteOpenHelper {
 //        }
 //        return list;
 //    }
+
+        public List<Item> searchByPhamvi(String phamvi) {
+        List<Item> list= new ArrayList<>();
+        String whereClause = "phamvi like ?";
+        String[] whereArgs = {"%"+phamvi+"%"};
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        Cursor rs = sqLiteDatabase.query("books",
+                null, whereClause, whereArgs,
+                null, null, null);
+        while ((rs != null) && (rs.moveToNext())) {
+            int id= rs.getInt(0);
+            String name = rs.getString(1);
+            String author = rs.getString(2);
+            String date = rs.getString(3);
+            String pv = rs.getString(4);
+            String doituong = rs.getString(5);
+            String rating= rs.getString(6);
+            list.add(new Item(id,name, author, date, pv, doituong, rating));
+        }
+        return list;
+    }
 }

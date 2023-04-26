@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.example.th2android.MainActivity;
@@ -31,6 +32,7 @@ public class SearchFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<Item> mList;
     private SQLHelper db;
+    private RadioButton rb1, rb2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +45,8 @@ public class SearchFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         search = view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recycleView);
+        rb1 = view.findViewById(R.id.rb1);
+        rb2 = view.findViewById(R.id.rb2);
         adapter = new RecycleViewAdapter();
         db = new SQLHelper(getContext());
         mList = db.getAll();
@@ -51,6 +55,48 @@ public class SearchFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
+        rb1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(rb1.isChecked()){
+                    List<Item> filterList = new ArrayList<>();
+                    for(Item i : mList){
+                        if((i.getPhamvi().toLowerCase().contains(rb1.getText().toString().toLowerCase()))){
+                            filterList.add(i);
+
+                        }
+                    }
+                    if(filterList.isEmpty()){
+                        Toast.makeText(getContext(), "Khong co du lieu khop", Toast.LENGTH_SHORT).show();
+
+                    }else {
+                        adapter.setList(filterList);
+                    }
+
+                }
+            }
+        });
+        rb2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(rb2.isChecked()){
+                    List<Item> filterList = new ArrayList<>();
+                    for(Item i : mList){
+                        if((i.getPhamvi().toLowerCase().contains(rb2.getText().toString().toLowerCase()))){
+                            filterList.add(i);
+
+                        }
+                    }
+                    if(filterList.isEmpty()){
+                        Toast.makeText(getContext(), "Khong co du lieu khop", Toast.LENGTH_SHORT).show();
+
+                    }else {
+                        adapter.setList(filterList);
+                    }
+
+                }
+            }
+        });
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
